@@ -53,8 +53,16 @@ export async function overwriteSheet(
   });
 }
 
-/** ヘッダー行の書式(太字・背景色・固定)を適用する。 */
-export async function formatHeaderRow(spreadsheetId: string, sheetTitle: string, columnCount: number): Promise<void> {
+/**
+ * ヘッダー行の書式(太字・背景色)を適用し、その行までを固定する。
+ * rowIndexは0始まり(既定0=先頭行)。タイトル行等がヘッダーより上にある場合はrowIndexで指定する。
+ */
+export async function formatHeaderRow(
+  spreadsheetId: string,
+  sheetTitle: string,
+  columnCount: number,
+  rowIndex = 0,
+): Promise<void> {
   const sheets = getSheets();
   const sheetId = await ensureSheetExists(spreadsheetId, sheetTitle);
 
@@ -64,7 +72,13 @@ export async function formatHeaderRow(spreadsheetId: string, sheetTitle: string,
       requests: [
         {
           repeatCell: {
-            range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
+            range: {
+              sheetId,
+              startRowIndex: rowIndex,
+              endRowIndex: rowIndex + 1,
+              startColumnIndex: 0,
+              endColumnIndex: columnCount,
+            },
             cell: {
               userEnteredFormat: {
                 backgroundColor: { red: 0.19, green: 0.33, blue: 0.59 },
@@ -77,7 +91,7 @@ export async function formatHeaderRow(spreadsheetId: string, sheetTitle: string,
         },
         {
           updateSheetProperties: {
-            properties: { sheetId, gridProperties: { frozenRowCount: 1 } },
+            properties: { sheetId, gridProperties: { frozenRowCount: rowIndex + 1 } },
             fields: "gridProperties.frozenRowCount",
           },
         },
