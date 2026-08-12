@@ -15,6 +15,7 @@
     "db:export-excel": "tsx scripts/export-knowledge-excel.ts",
     "db:interpret": "tsx scripts/interpret-knowledge.ts",
     "postdb:interpret": "npm run sheet:sync-knowledge",
+    "db:refresh-empty": "tsx scripts/refresh-empty-knowledge.ts",
     "sheet:sync-knowledge": "tsx scripts/sync-knowledge-sheet.ts",
     "sheet:sync-project": "tsx scripts/sync-project-sheet-from-xlsx.ts"
   },
