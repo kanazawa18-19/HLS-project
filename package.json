@@ -9,11 +9,15 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:seed": "tsx scripts/db-seed.ts",
-    "db:import-pdfs": "tsx scripts/import-pdf-manuals.ts"
+    "postdb:seed": "npm run db:export-excel",
+    "db:import-pdfs": "tsx scripts/import-pdf-manuals.ts",
+    "postdb:import-pdfs": "npm run db:export-excel",
+    "db:export-excel": "tsx scripts/export-knowledge-excel.ts"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.2",
+    "exceljs": "^4.4.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"

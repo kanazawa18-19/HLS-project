@@ -48,3 +48,6 @@ next-env.d.ts
 
 # downloaded source PDFs (large binaries; re-download from Drive if needed)
 /data/pdf-sources/
+
+# raw exports downloaded from Slack (may contain third-party data; not versioned)
+/data/slack-sources/
