@@ -35,6 +35,9 @@ export const knowledgeEntries = sqliteTable(
     body: text("body"),
     // has_content: bodyに実データがあるか(0/1)。Notion由来で本文が空のものを識別するため
     hasContent: integer("has_content", { mode: "boolean" }).notNull().default(false),
+    // AIがbodyの原文を読み、現場向けに要点・手順・注意点として明文化したもの(scripts/interpret-knowledge.ts)。
+    // 原文(body)は残したまま、閲覧用にはこちらを優先して使う。
+    digest: text("digest"),
     otaId: integer("ota_id").references(() => otas.id),
     facilityId: integer("facility_id").references(() => facilities.id),
     // プラン作成 / 部屋作成 / 料金紐づけ / OTAパスワード変更 / 実績計算 / よくある質問 等

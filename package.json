@@ -9,15 +9,21 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:seed": "tsx scripts/db-seed.ts",
-    "postdb:seed": "npm run db:export-excel",
+    "postdb:seed": "npm run db:export-excel && npm run sheet:sync-knowledge",
     "db:import-pdfs": "tsx scripts/import-pdf-manuals.ts",
-    "postdb:import-pdfs": "npm run db:export-excel",
-    "db:export-excel": "tsx scripts/export-knowledge-excel.ts"
+    "postdb:import-pdfs": "npm run db:export-excel && npm run sheet:sync-knowledge",
+    "db:export-excel": "tsx scripts/export-knowledge-excel.ts",
+    "db:interpret": "tsx scripts/interpret-knowledge.ts",
+    "postdb:interpret": "npm run sheet:sync-knowledge",
+    "sheet:sync-knowledge": "tsx scripts/sync-knowledge-sheet.ts",
+    "sheet:sync-project": "tsx scripts/sync-project-sheet-from-xlsx.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.2",
     "exceljs": "^4.4.0",
+    "googleapis": "^174.0.1",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
