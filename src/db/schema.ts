@@ -18,6 +18,12 @@ export const otas = sqliteTable("otas", {
 export const facilities = sqliteTable("facilities", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull().unique(),
+  // 大型アカウントは専属チーム(例: 「プリンスチーム」「西鉄チーム」)がつくことがある。小規模施設はnull。
+  teamName: text("team_name"),
+  // 施設とやり取りする一次窓口。エスカレーション(Slackボタン)は原則この人に飛ばす(2026-08-13決定)。
+  directorName: text("director_name"),
+  // ディレクター不明/不在時のエスカレーション先(2026-08-13決定)。
+  adName: text("ad_name"),
   notes: text("notes"),
   createdAt: text("created_at").notNull().default(sql`(current_timestamp)`),
   updatedAt: text("updated_at").notNull().default(sql`(current_timestamp)`),

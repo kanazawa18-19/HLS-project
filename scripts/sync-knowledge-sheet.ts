@@ -67,10 +67,10 @@ async function main() {
 
   console.log("[3/5] 施設マスタ...");
   await overwriteSheet(SPREADSHEET_ID, "施設マスタ", [
-    ["ID", "施設名", "備考"],
-    ...facilities.map((f) => [f.id, f.name, f.notes]),
+    ["ID", "施設名", "チーム", "担当ディレクター", "AD(担当ディレクター不在時のエスカレーション先)", "備考"],
+    ...facilities.map((f) => [f.id, f.name, f.teamName, f.directorName, f.adName, f.notes]),
   ]);
-  await formatHeaderRow(SPREADSHEET_ID, "施設マスタ", 3);
+  await formatHeaderRow(SPREADSHEET_ID, "施設マスタ", 6);
 
   console.log("[4/5] ナレッジ一覧(索引)...");
   const indexRows = entries.map((e, i) => {

@@ -97,10 +97,10 @@ async function main() {
 
   // --- 施設マスタ ---
   const wsFacility = wb.addWorksheet("施設マスタ");
-  wsFacility.columns = [{ width: 6 }, { width: 34 }, { width: 50 }];
-  headerRow(wsFacility, ["ID", "施設名", "備考"]);
+  wsFacility.columns = [{ width: 6 }, { width: 34 }, { width: 16 }, { width: 16 }, { width: 16 }, { width: 50 }];
+  headerRow(wsFacility, ["ID", "施設名", "チーム", "担当ディレクター", "AD", "備考"]);
   for (const f of facilities) {
-    const row = wsFacility.addRow([f.id, f.name, f.notes ?? ""]);
+    const row = wsFacility.addRow([f.id, f.name, f.teamName ?? "", f.directorName ?? "", f.adName ?? "", f.notes ?? ""]);
     row.eachCell((cell) => {
       cell.border = BORDER;
       cell.alignment = WRAP;

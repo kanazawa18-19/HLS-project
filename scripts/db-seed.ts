@@ -98,9 +98,9 @@ const CATEGORY_TAGS = new Set([
   "施設ルール", "依頼系", "OTAチェック", "PW更新", "民泊",
 ]);
 
-const FACILITY_SEED: { name: string; notes?: string }[] = [
-  { name: "ソラリア西鉄ホテル京都プレミア" },
-  { name: "グランドプリンスホテル大阪ベイ" },
+const FACILITY_SEED: { name: string; teamName?: string; notes?: string }[] = [
+  { name: "ソラリア西鉄ホテル京都プレミア", teamName: "西鉄チーム" },
+  { name: "グランドプリンスホテル大阪ベイ", teamName: "プリンスチーム" },
   { name: "東横イン", notes: "2026-08-10 MTGで過去の設定ミス損害事例として言及" },
 ];
 
@@ -301,13 +301,24 @@ async function main() {
 
   console.log("[3/5] seeding facility master...");
   let facilityCount = 0;
+  let facilityUpdated = 0;
   for (const f of FACILITY_SEED) {
     const existing = db.select().from(schema.facilities).where(eq(schema.facilities.name, f.name)).get();
-    if (existing) continue;
-    db.insert(schema.facilities).values({ name: f.name, notes: f.notes }).run();
+    if (existing) {
+      // teamNameはコード側を正とする(directorName/adNameは現場で決めるためここでは触らない)
+      if (f.teamName && existing.teamName !== f.teamName) {
+        db.update(schema.facilities)
+          .set({ teamName: f.teamName, updatedAt: new Date().toISOString() })
+          .where(eq(schema.facilities.id, existing.id))
+          .run();
+        facilityUpdated++;
+      }
+      continue;
+    }
+    db.insert(schema.facilities).values({ name: f.name, teamName: f.teamName, notes: f.notes }).run();
     facilityCount++;
   }
-  console.log(`  -> ${facilityCount} 施設 (新規)`);
+  console.log(`  -> ${facilityCount} 施設 (新規)、${facilityUpdated} 施設 (チーム名を更新)`);
 
   console.log("[4/5] fetching Notion manual catalogs...");
   const proManual = await fetchAllRows("53602be8e3d5488c9195a680f2f9a80b");
