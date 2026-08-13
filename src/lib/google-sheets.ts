@@ -53,6 +53,75 @@ export async function overwriteSheet(
   });
 }
 
+/** 指定した列(0始まり)の幅をピクセル単位で設定する。 */
+export async function setColumnWidth(spreadsheetId: string, sheetTitle: string, columnIndex: number, widthPx: number): Promise<void> {
+  const sheets = getSheets();
+  const sheetId = await ensureSheetExists(spreadsheetId, sheetTitle);
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          updateDimensionProperties: {
+            range: { sheetId, dimension: "COLUMNS", startIndex: columnIndex, endIndex: columnIndex + 1 },
+            properties: { pixelSize: widthPx },
+            fields: "pixelSize",
+          },
+        },
+      ],
+    },
+  });
+}
+
+/** 指定した列(0始まり)全体に折り返し(WRAP)を設定する。長文プレーン文書のセル内改行表示用。 */
+export async function wrapColumn(spreadsheetId: string, sheetTitle: string, columnIndex: number): Promise<void> {
+  const sheets = getSheets();
+  const sheetId = await ensureSheetExists(spreadsheetId, sheetTitle);
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: [
+        {
+          repeatCell: {
+            range: { sheetId, startColumnIndex: columnIndex, endColumnIndex: columnIndex + 1 },
+            cell: { userEnteredFormat: { wrapStrategy: "WRAP", verticalAlignment: "TOP" } },
+            fields: "userEnteredFormat(wrapStrategy,verticalAlignment)",
+          },
+        },
+      ],
+    },
+  });
+}
+
+/**
+ * 指定した行(0始まり)のA列だけを太字にする。仕様書のような単一列プレーン文書の
+ * セクション見出しを目立たせる用途(表のヘッダーにはformatHeaderRowを使う)。
+ */
+export async function boldRows(spreadsheetId: string, sheetTitle: string, rowIndexes: number[], fontSize?: number): Promise<void> {
+  const sheets = getSheets();
+  const sheetId = await ensureSheetExists(spreadsheetId, sheetTitle);
+  if (rowIndexes.length === 0) return;
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    requestBody: {
+      requests: rowIndexes.map((rowIndex) => ({
+        repeatCell: {
+          range: { sheetId, startRowIndex: rowIndex, endRowIndex: rowIndex + 1, startColumnIndex: 0, endColumnIndex: 1 },
+          cell: {
+            userEnteredFormat: {
+              textFormat: { bold: true, fontSize },
+            },
+          },
+          fields: "userEnteredFormat.textFormat",
+        },
+      })),
+    },
+  });
+}
+
 /**
  * ヘッダー行の書式(太字・背景色)を適用し、その行までを固定する。
  * rowIndexは0始まり(既定0=先頭行)。タイトル行等がヘッダーより上にある場合はrowIndexで指定する。
