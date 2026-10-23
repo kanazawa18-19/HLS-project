@@ -1,0 +1,10 @@
+2026-10-23 セキュリティ対応
+
+Next16.4.2/React19.2.9/Node条件^22.23.4へ更新。認証設定・業務データを除いたコピーでNextビルド成功。本番用npm監査0件。全依存監査はhigh5/moderate4/critical0。本番反映・実稼働Node確認は未実施。 ExcelJS限定でuuid11.1.1に上書きし、UUID生成と条件付き書式付きXLSX往復を確認。既存のAgoda作業変更は保持。残る指摘は開発用braces/esbuild系。
+
+公式：
+https://nodejs.org/en/blog/vulnerability/october-2026-security-releases
+https://nextjs.org/blog/nextjs-security-update-october-14-2026
+
+全体の証跡・残件：~/security-audit-20261023/report.txt
+独立のセキュリティ・品質・QAレビュー実施。他社モデルレビューはChrome通信エラーで未実施。
